@@ -1,0 +1,10 @@
+Dec 03, 2023 9:15:26 PM application.bookstore.Main main
+INFO: Starting APP...
+Dec 03, 2023 9:15:26 PM application.bookstore.Main loadData
+INFO: Loading data Files...
+Dec 03, 2023 9:15:26 PM application.bookstore.models.BaseModel getData
+INFO: End of data\authors.txt file reached!
+Dec 03, 2023 9:15:26 PM application.bookstore.models.BaseModel getData
+INFO: End of data\books.txt file reached!
+Dec 03, 2023 9:15:26 PM application.bookstore.models.BaseModel getData
+INFO: End of data\clients.txt file reached!
