@@ -46,8 +46,15 @@ public class Author extends BaseModel<Author> implements Serializable, Cloneable
 
     @Override
     public Author clone() {
-        return new Author(firstName, lastName);
+        try {
+            // Call the superclass's clone method
+            return (Author) super.clone();
+        } catch (CloneNotSupportedException e) {
+            // This exception should not occur since Author implements Cloneable
+            throw new InternalError(e);
+        }
     }
+
 
 
     @Override

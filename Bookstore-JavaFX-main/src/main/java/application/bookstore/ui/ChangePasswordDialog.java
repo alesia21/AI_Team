@@ -112,7 +112,7 @@ public class ChangePasswordDialog {
         }
     }
 
-    class ConfirmationDialog extends Stage {
+    static class ConfirmationDialog extends Stage {
         Button okButton;
 
         ConfirmationDialog(String message) {

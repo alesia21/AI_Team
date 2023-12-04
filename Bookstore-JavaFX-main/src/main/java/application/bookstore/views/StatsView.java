@@ -50,7 +50,7 @@ public class StatsView extends View {
 
 
 
-    class customPieChart extends PieChart {
+    static class customPieChart extends PieChart {
 
         public enum dataOptions{
             Client_Based_Total_Income,
