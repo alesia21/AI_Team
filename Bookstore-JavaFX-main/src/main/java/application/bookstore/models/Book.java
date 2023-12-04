@@ -58,10 +58,10 @@ public class Book extends BaseModel<Book> implements Serializable, Cloneable {
 
 
     @Override
-    public Book clone() {
+    public Object clone() {
         try {
             // Call the superclass's clone method
-            return (Book) super.clone();
+            return  super.clone();
         } catch (CloneNotSupportedException e) {
             // This exception should not occur since Book implements Cloneable
             throw new InternalError(e);

@@ -108,7 +108,7 @@ public class OrderController {
 
     private void changeStock(){
         for (BookOrder b : orderView.getTableView().getItems()) {
-            Book updatedBook = b.getBook().clone();
+            Book updatedBook = (Book) b.getBook().clone();
             updatedBook.setQuantity(b.getBook().getQuantity() - b.getQuantity());
             updatedBook.updateInFile(b.getBook());
             b.setBook(updatedBook);

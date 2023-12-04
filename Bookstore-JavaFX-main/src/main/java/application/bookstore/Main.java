@@ -38,7 +38,11 @@ public class Main extends Application {
         File f = new File(User.FILE_PATH);
         if (!f.exists()){
             ControllerCommon.LOGGER.info("Creating startup Data...");
-            new File(BaseModel.FOLDER_PATH).mkdirs();
+            if (new File(BaseModel.FOLDER_PATH).mkdirs()) {
+                ControllerCommon.LOGGER.info("Directories created successfully.");
+            } else {
+                ControllerCommon.LOGGER.warning("Failed to create directories.");
+            }
             User u = new User("admin", "admin", Role.ADMIN);
             ControllerCommon.LOGGER.log(Level.INFO, u.saveInFile());
             /*u = new User("manager", "manager", Role.MANAGER);

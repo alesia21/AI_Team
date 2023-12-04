@@ -80,7 +80,7 @@ public class Order extends BaseModel<Order> implements Serializable {
         LocalDateTime now = LocalDateTime.now();
         setDate(dateFormatter.format(now));
         for (int i = 0; i < booksOrdered.size(); i++)
-            booksOrdered.set(i, booksOrdered.get(i).clone());// we need to clone them because the originals will be removed from the view and thus unreferenced
+            booksOrdered.set(i, (BookOrder) booksOrdered.get(i).clone());// we need to clone them because the originals will be removed from the view and thus unreferenced
     }
 
     @Override

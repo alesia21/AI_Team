@@ -14,12 +14,13 @@ public class FileHandler {
     public static <T extends BaseModel> void overwriteCurrentListToFile(File file, ObservableList<T> data) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(file, false);
         ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
-        if (data.isEmpty()) {
-            ;
-        } else {
+        boolean isDataEmpty = data.isEmpty();
+        if (!isDataEmpty) {
             for (T entity : data)
                 outputStream.writeObject(entity);
         }
+
+
 
     }
 }

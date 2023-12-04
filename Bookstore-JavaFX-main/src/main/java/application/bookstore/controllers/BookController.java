@@ -86,7 +86,7 @@ public class BookController {
     private void setEditListener() {
         view.getIsbnCol().setOnEditCommit(e -> {
             Book bookToEdit = e.getRowValue();
-            Book editedBook = bookToEdit.clone();
+            Book editedBook = (Book) bookToEdit.clone();
             editedBook.setIsbn(e.getNewValue());
             if (!editedBook.getIsbn().equals(bookToEdit.getIsbn())) {
                 if (editedBook.exists()) {
@@ -104,7 +104,7 @@ public class BookController {
 
         view.getTitleCol().setOnEditCommit(e -> {
             Book bookToEdit = e.getRowValue();
-            Book editedBook = bookToEdit.clone();
+            Book editedBook = (Book) (Book) bookToEdit.clone();
             editedBook.setTitle(e.getNewValue());
             String res = editedBook.updateInFile(bookToEdit);
             if (res.matches("1"))
@@ -115,7 +115,7 @@ public class BookController {
 
         view.getQuantityCol().setOnEditCommit(e -> {
             Book bookToEdit = e.getRowValue();
-            Book editedBook = bookToEdit.clone();
+            Book editedBook = (Book) bookToEdit.clone();
             editedBook.setQuantity(e.getNewValue());
             String res = editedBook.updateInFile(bookToEdit);
             if (res.matches("1"))
@@ -126,7 +126,7 @@ public class BookController {
 
         view.getPurchasedPriceCol().setOnEditCommit(e -> {
             Book bookToEdit = e.getRowValue();
-            Book editedBook = bookToEdit.clone();
+            Book editedBook = (Book) bookToEdit.clone();
             editedBook.setPurchasedPrice(e.getNewValue());
             String res = editedBook.updateInFile(bookToEdit);
             if (res.matches("1"))
@@ -137,7 +137,7 @@ public class BookController {
 
         view.getSellingPriceCol().setOnEditCommit(e -> {
             Book bookToEdit = e.getRowValue();
-            Book editedBook = bookToEdit.clone();
+            Book editedBook = (Book) bookToEdit.clone();
             editedBook.setSellingPrice(e.getNewValue());
             String res = editedBook.updateInFile(bookToEdit);
             if (res.matches("1"))

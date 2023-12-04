@@ -33,13 +33,20 @@ public class DeleteAuthorDialog extends Alert {
         Window window = getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(e -> hide());
         Optional<ButtonType> result = showAndWait();
-        if (result.isEmpty()) ;
-        else
+
+        if (!result.isEmpty()) {
             if (result.get() == deleteBooks) {
-            deleteAuthors(view, true);
+                deleteAuthors(view, true);
+            } else if (result.get() == deleteOnlyAuthors) {
+                deleteAuthors(view, false);
+            } else {
+                // Intentionally empty block
+                // The conditions above cover all cases
+            }
         }
-        else if (result.get()==deleteOnlyAuthors)
-            deleteAuthors(view, false);
+
+
+
     }
 
     private ImageView getImage() {

@@ -40,16 +40,15 @@ public class BookOrder implements Serializable, Cloneable {
 
     // we will need to clone them later on before we remove them from the OrderView table
     @Override
-    public BookOrder clone() {
-        try{
+    public Object clone() {
+        try {
             // Calling the superclass's clone method
-            return(BookOrder) super.clone();
+            return  super.clone();
         } catch (CloneNotSupportedException e) {
-            // This exception should not occur since Author implements Cloneable
+            // This exception should not occur since BookOrder implements Cloneable
             throw new InternalError(e);
         }
     }
-
     public int getQuantity() {
         return quantity;
     }

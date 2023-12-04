@@ -1,10 +1,17 @@
-Dec 04, 2023 8:59:11 PM application.bookstore.Main main
+Dec 04, 2023 9:50:06 PM application.bookstore.Main main
 INFO: Starting APP...
-Dec 04, 2023 8:59:11 PM application.bookstore.Main loadData
+Dec 04, 2023 9:50:06 PM application.bookstore.Main loadData
 INFO: Loading data Files...
-Dec 04, 2023 8:59:11 PM application.bookstore.models.BaseModel getData
+Dec 04, 2023 9:50:06 PM application.bookstore.models.BaseModel getData
 INFO: End of data\authors.txt file reached!
-Dec 04, 2023 8:59:11 PM application.bookstore.models.BaseModel getData
+Dec 04, 2023 9:50:06 PM application.bookstore.models.BaseModel getData
 INFO: End of data\books.txt file reached!
-Dec 04, 2023 8:59:11 PM application.bookstore.models.BaseModel getData
+Dec 04, 2023 9:50:06 PM application.bookstore.models.BaseModel getData
 INFO: End of data\clients.txt file reached!
+Dec 04, 2023 9:50:12 PM application.bookstore.controllers.LoginController lambda$addListener$1
+INFO: Logged in with user: 
+User{
+	"username": admin,
+	"password": ******,
+	"role": ADMIN
+}
