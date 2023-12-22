@@ -1,0 +1,79 @@
+package application.bookstore.models;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.internal.util.io.IOUtil.readLines;
+
+public class UserIntegrationTesting {
+
+    private static final String TEST_DATA_FOLDER = "test_data";
+    private static final File TEST_DATA_FILE = new File(TEST_DATA_FOLDER, "users.txt");
+
+    @BeforeEach
+    void setUp() throws IOException {
+        // Create test data folder
+        TEST_DATA_FILE.getParentFile().mkdirs();
+
+        // Prepare initial data
+        List<String> initialData = List.of("User1:Pass1:ADMIN", "User2:Pass2:MANAGER");
+       // CustomFileHandler.writeLines(TEST_DATA_FILE.getPath(), initialData);
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Delete test data folder after each test
+        deleteFolder(TEST_DATA_FILE.getParentFile());
+    }
+
+    @Test
+    void testDeleteFromFile() {
+        User userToDelete = new User("User1", "Pass1", Role.ADMIN);
+
+        String result = userToDelete.deleteFromFile();
+
+        // Verify the result
+        assertEquals("1", result); // Assuming "1" indicates success in your implementation
+
+        // Verify that the user was deleted from the file
+       // List<String> remainingData = CustomFileHandler.readLines(TEST_DATA_FILE.getPath());
+        //assertFalse(remainingData.contains("User1:Pass1:ADMIN"));
+    }
+
+    @Test
+    void testUpdateInFile() {
+        User oldUser = new User("User1", "Pass1", Role.ADMIN);
+        User updatedUser = new User("UpdatedUser", "NewPass", Role.MANAGER);
+
+        String result = updatedUser.updateInFile(oldUser);
+
+        // Verify the result
+        assertEquals("1", result); // Assuming "1" indicates success in your implementation
+        CustomFileHandler fileHandler = new CustomFileHandler();
+
+        //List<String> updatedData = CustomFileHandler.readLines(TEST_DATA_FILE.getPath());
+
+    }
+
+    private void deleteFolder(File folder) {
+        if (folder.exists()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteFolder(file);
+                    } else {
+                        file.delete();
+                    }
+                }
+            }
+            folder.delete();
+        }
+    }
+}
