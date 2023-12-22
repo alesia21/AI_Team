@@ -1,0 +1,378 @@
+package application.bookstore.models;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+
+class UserTest {
+
+    @Mock
+    private FileDataReader mockFileDataReader;
+
+    @BeforeEach
+    //Boundary testing : setting up mockito for file data reader
+    public void setUpMockito() {
+        mockFileDataReader = mock(FileDataReader.class);
+        User.setFileDataReader(mockFileDataReader);
+    }
+
+    @Test
+    //Boundary test: getting users from an empty list
+    public void testGetUsers() {
+        // Ensure that the test data file is in a known state before running the test
+        // This may involve creating or copying a test data file
+
+        // Call the getUsers method
+        ObservableList<User> userList = User.getUsers();
+
+        // Assert that the returned list is not null
+        assertNotNull(userList, "User list should not be null");
+    }
+
+
+
+
+
+@Test
+//Equivalence testing - validating
+    void testIsValid_MinimumValidInput() {
+        User user = new User("a", "1");
+        assertNull(user.isValid(), "Minimum valid input should be accepted");
+    }
+
+
+    @BeforeEach
+    void setUp() {
+        mockFileDataReader = mock(FileDataReader.class);
+        User.setFileDataReader(mockFileDataReader);
+    }
+
+    @Test
+    //Mocking
+    void testGetUsersMockito() {
+        // Mocking the file reading process
+        when(mockFileDataReader.readLines(User.FILE_PATH)).thenReturn(FXCollections.observableArrayList(
+                "Alice:password:ADMIN",
+                "Bob:pass123:MANAGER"
+        ));
+
+        // Define expectedUsers based on the mocked data
+        ObservableList<User> expectedUsers = FXCollections.observableArrayList(
+                new User("Alice", "password", Role.ADMIN),
+                new User("Bob", "pass123", Role.MANAGER)
+        );
+
+        // Invoke the method you want to test
+        ObservableList<User> users = User.getUsers();
+
+        // Assertions or verifications based on your test requirements
+        verify(mockFileDataReader, times(1)).readLines(User.FILE_PATH);
+
+        // Check the content of the 'users' list against the expectedUsers
+        assertEquals(expectedUsers, users);
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_MaximumValidInput() {
+        // Create a User with maximum-length username and password
+        String maxString = "abcdefghijklmnopqrstuvwxyz1234567890_";
+        User user = new User(maxString, maxString);
+        assertNull(user.isValid(), "Maximum valid input should be accepted");
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_EmptyUsername() {
+        User user = new User("", "password");
+        assertEquals("Username must contain at least 1 letter (case-insensitive), number, or underscore.",
+                user.isValid(), "Empty username should be rejected");
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_EmptyPassword() {
+        User user = new User("username", "");
+        assertEquals("Password must contain at least 1 letter (case-insensitive), number, or underscore.",
+                user.isValid(), "Empty password should be rejected");
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_UsernameWithSpaces() {
+        User user = new User("user name", "password");
+        assertEquals("Username must contain at least 1 letter (case-insensitive), number, or underscore.",
+                user.isValid(), "Username with spaces should be rejected");
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_PasswordWithSpaces() {
+        User user = new User("username", "pass word");
+        assertEquals("Password must contain at least 1 letter (case-insensitive), number, or underscore.",
+                user.isValid(), "Password with spaces should be rejected");
+    }
+
+    @Test
+    //Equivalence testing
+    void testIsValid_UsernameWithSpecialCharacters() {
+        User user = new User("user@name", "password");
+        assertEquals("Username must contain at least 1 letter (case-insensitive), number, or underscore.",
+                user.isValid(), "Username with special characters should be rejected");
+    }
+
+
+    @Test
+    //Boundary testing
+    public void testGetUsername() {
+        User user4 = new User();
+        user4.setUsername("testUsername");
+        assertEquals("testUsername", user4.getUsername());
+    }
+
+    @Test
+    //Boundary testing
+    public void testSetUsername() {
+        User user5 = new User();
+        user5.setUsername("testUsername");
+        assertEquals("testUsername", user5.getUsername());
+    }
+
+    @Test
+    //Boundary testing
+    public void testGetPassword() {
+        User user6 = new User();
+        user6.setPassword("testPassword");
+        assertEquals("testPassword", user6.getPassword());
+    }
+
+    @Test
+    //Boundary testing: setting password in an empty user object
+    public void testSetPassword() {
+        User user1 = new User();
+        user1.setPassword("testPassword");
+        assertEquals("testPassword", user1.getPassword());
+    }
+
+
+    @Test
+    //Boundary testing: getting role from a user with a specific role
+    public void testGetRole() {
+        User user8 = new User("testUsername", "testPassword", Role.ADMIN);
+        assertEquals(Role.ADMIN, user8.getRole());
+    }
+
+    @Test
+    //Boundary testing : setting role in an empty user object
+    public void testSetRole() {
+        User user10 = new User();
+        user10.setRole(Role.MANAGER);
+        assertEquals(Role.MANAGER, user10.getRole());
+    }
+
+
+    @Test
+    //Equivalence testing- check equality with the same user
+    public void testEqualsWithSameUser() {
+        User user1 = new User("testUsername", "testPassword", Role.MANAGER);
+        User user2 = new User("testUsername", "testPassword", Role.MANAGER);
+        assertTrue(user1.equals(user2));
+        assertTrue(user2.equals(user1));
+    }
+
+    @Test
+    //Equivalence testing
+    public void testEqualsWithDifferentUsername() {
+        User user1 = new User("testUsername", "testPassword", Role.ADMIN);
+        User user2 = new User("differentUsername", "testPassword", Role.ADMIN);
+
+        assertFalse(user1.equals(user2));
+        assertFalse(user2.equals(user1));
+    }
+
+    @Test
+    //Equivalence testing
+    public void testEqualsWithDifferentRoles() {
+        User user1 = new User("testUsername", "testPassword", Role.MANAGER);
+        User user2 = new User("testUsername", "testPassword", Role.ADMIN);
+        assertFalse(user1.equals(user2));
+        assertFalse(user2.equals(user1));
+    }
+
+
+    @Test
+    //Equivalence testing
+    public void testEqualsWithNonUserObject() {
+        User user = new User("testUsername", "testPassword", Role.LIBRARIAN);
+        String nonUserObject = "not a User object";
+        assertFalse(user.equals(nonUserObject));
+    }
+
+    @Test
+    //Equivalence testing
+    public void testToString() {
+        User user = new User("testUsername", "testPassword", Role.ADMIN);
+        String expectedToString = "\nUser{" +
+                "\n\t\"username\": testUsername" +
+                ",\n\t\"password\": **" +
+                ",\n\t\"role\": ADMIN" +
+                "\n}";
+
+        assertEquals(expectedToString, user.toString());
+    }
+
+    @Test
+    //Equivalence testing
+    public void testSetPurchasedPrice() {
+        // Create a sample author
+        Author author = new Author("John Doe", "john.doe@example.com");
+
+        // Create a sample book
+        Book book = new Book("1234567890123", "Test Book", 5, 20.0f, 30.0f, author);
+
+        // Set a new purchased price
+        float newPurchasedPrice = 25.0f;
+        book.setPurchasedPrice(newPurchasedPrice);
+
+        // Check if the purchased price was set correctly
+        assertEquals(newPurchasedPrice, book.getPurchasedPrice(), 0.001, "Purchased price should be updated");
+    }
+@Test
+//Equivalence testing
+    public void testGetIfExists() {
+        // Create a sample role
+        Role userRole = Role.MANAGER;
+
+        // Create a sample user with a role
+        User existingUser = new User("john_doe", "password", userRole);
+
+        // Add the user to the list of existing users
+        User.getUsers().add(existingUser);
+
+        // Create a potential user with the same credentials and role
+        User potentialUser = new User("john_doe", "password", userRole);
+
+        // Call the getIfExists method
+        User result = User.getIfExists(potentialUser);
+
+        // Check if the result is not null and is the same as the existing user
+        assertNotNull(result, "User should exist");
+        assertEquals(existingUser, result, "Users should match");
+    }
+
+    @Test
+    //Equivalence testing
+    public void testGetIfExistsTwo() {
+        // Create a sample role
+        Role userRole = Role.MANAGER;
+
+        // Create a sample user with a role
+        User existingUser = new User("john_doe", "password", userRole);
+
+        // Add the user to the list of existing users
+        User.getUsers().add(existingUser);
+
+        // Create a potential user with different credentials and the same role
+        User potentialUser = new User("different_username", "different_password", userRole);
+
+        // Call the getIfExists method
+        User result = User.getIfExists(potentialUser);
+
+        // Check if the result is null since the users are not equal
+        assertNull(result, "User should not exist");
+    }
+    @Test
+    //Equivalence testing
+    void testUsernameExists() {
+        // Create a sample user with a unique username
+        User userWithUniqueUsername = new User("john_doe", "password", Role.MANAGER);
+
+        // Add the user to the list of existing users
+        User.getUsers().add(userWithUniqueUsername);
+
+        // Test case 1: Existing username and different user
+        User potentialUser1 = new User("john_doe", "different_password", Role.MANAGER);
+        assertTrue(potentialUser1.usernameExists(), "Should return false");
+
+        // Test case 2: Existing username and same user
+        User potentialUser2 = userWithUniqueUsername;
+        assertFalse(potentialUser2.usernameExists(), "Should return false");
+
+        // Test case 3: Non-existing username
+        User potentialUser3 = new User("non_existing_user", "password", Role.MANAGER);
+        assertFalse(potentialUser3.usernameExists(), "Should return false");
+        // Test case 3: Non-existing username
+
+
+    }
+
+
+
+
+
+    @Test
+    //Equivalence Testing
+    void testGetSearchResults() {
+        // Create some sample users
+        User user1 = new User("john_doe", "password", Role.MANAGER);
+        User user2 = new User("jane_smith", "password", Role.ADMIN);
+        User user3 = new User("bob_jones", "password", Role.MANAGER);
+
+        // Add users to the list of existing users
+        User.getUsers().add(user1);
+        User.getUsers().add(user2);
+        User.getUsers().add(user3);
+
+        // Test case 1: Search text matches one user
+        String searchText1 = "jane";
+        ArrayList<User> result1 = User.getSearchResults(searchText1);
+        assertEquals(1, result1.size(), "Should return one result");
+        //assertTrue(result1.contains(user2), "Result should contain jane_smith");
+
+        // Test case 2: Search text matches multiple users
+        String searchText2 = ".j.";
+        ArrayList<User> result2 = User.getSearchResults(searchText2);
+        assertEquals(0, result2.size(), "Should return 0 results");
+        assertFalse(result2.contains(user1), "Result should not contain john_doe");
+       assertFalse(result2.contains(user2), "Result should NOT  jane_smith");
+        assertFalse(result2.contains(user3), "Result should not contain bob_jones");
+
+        // Test case 3: Search text does not match any user
+        String searchText3 = "nonexistent";
+        ArrayList<User> result3 = User.getSearchResults(searchText3);
+        assertEquals(0, result3.size(), "Should return no results");
+
+        // Clean up the users list
+        User.getUsers().clear();
+    }
+
+    @Test
+    //Equivalence testing
+    void testSaveInFile() {
+        // Create a sample user
+        User existingUser = new User("john_doe", "password", Role.MANAGER);
+
+        // Add the user to the list of existing users
+        User.getUsers().add(existingUser);
+
+        // Test case 1: Username exists
+        String result1 = existingUser.saveInFile();
+        assertEquals("Username Exists", result1, "Should return 'Username Exists'");
+
+        // Test case 2: Username does not exist
+        User newUser = new User("new_user", "password", Role.MANAGER);
+        String result2 = newUser.saveInFile();
+        assertEquals("Saved Successfully", result2, "Should return 'Saved Successfully'");
+
+        // Clean up the users list
+        User.getUsers().clear();
+    }
+}
