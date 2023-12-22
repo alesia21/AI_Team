@@ -1,0 +1,9 @@
+package application.bookstore.models;
+import java.io.IOException;
+import java.util.List;
+
+public interface FileDataReader {
+    List<String> readLines(String filePath);
+
+    void writeLines(String filePath, List<String> lines) throws IOException;
+}
