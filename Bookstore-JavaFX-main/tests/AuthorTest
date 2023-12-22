@@ -1,0 +1,240 @@
+package application.bookstore.models;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
+
+public class AuthorTest {
+    @Mock
+    private FileDataReader mockFileDataReader;
+
+    @InjectMocks
+    private Author author;
+
+    @Mock
+    private CustomFileHandler mockCustomFileHandler;
+    @org.junit.jupiter.api.Test
+    //Equivalence test: testing a valid input
+    void testValidInput() {
+        Author author = new Author("John", "Doe");
+        assertNotNull(author);
+    }
+
+
+
+
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: testing an invalid input: empty first name
+    void testInvalidInputFirstName() {
+        Author author = new Author("", "Doe");
+        assertEquals("1", author.isValid());
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing : testing an invalid input: empty last name
+    void testInvalidInputLastName() {
+        Author author = new Author("John", "");
+        assertEquals("1", author.isValid());
+    }
+
+    @org.junit.jupiter.api.Test
+        // Boundary Test: Testing the maximum allowed length of the first name
+    void testBoundaryMaxFirstName() {
+        Author author = new Author("A123456789012345678901234567890", "Doe");
+        assertNotNull(author);
+    }
+
+    @org.junit.jupiter.api.Test
+    //Boundary testing: testing the max allowed length of the last name
+    void testBoundaryMaxLastName() {
+        Author author = new Author("John", "B123456789012345678901234567890");
+        assertNotNull(author);
+    }
+
+
+
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing : testing a valid save
+    void testValidSave() {
+        Author author = new Author("Jane", "Doe");
+        String result = author.saveInFile();
+        assertEquals("Correct1" , result);
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing : testing a duplicate save
+    void testDuplicateSave() {
+        Author author = new Author("John", "Doe");
+        String result = author.saveInFile();
+        assertEquals("Correct1", result);
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: testing the clone method
+    void testClone() {
+        Author author = new Author("John", "Doe");
+        Author clonedAuthor = (Author) author.clone();
+        assertNotNull(clonedAuthor);
+        assertNotSame(author, clonedAuthor);
+        assertEquals(author.getFullName(), clonedAuthor.getFullName());
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: testing the to string method
+    void testToString() {
+        Author author = new Author("John", "Doe");
+        String expectedString = "\nAuthor{" +
+                "\n\t\"firstName\": " + author.getFirstName() +
+                ",\n\t\"lastName\": " + author.getLastName() +
+                "\n}";
+        assertEquals(expectedString, author.toString());
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: deleting from a file with non empty list
+    void testDeleteFromFile() {
+        Author author = new Author("John", "Doe");
+        ObservableList<Author> authors = FXCollections.observableArrayList(author);
+        String result = author.deleteFromFile();
+        assertEquals("1", result); // Assuming "1" is the success code in the delete method
+        assertFalse(authors.isEmpty());
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing : deleting from a file with empty list
+    void testDeleteFromFileEmptyList() {
+        Author author = new Author("John", "Doe");
+        ObservableList<Author> authors = FXCollections.observableArrayList();
+        author.setAuthors(authors);
+        String result = author.deleteFromFile();
+        assertEquals("1", result); // Assuming "1" is the success code in the delete method
+        assertTrue(authors.isEmpty());
+    }
+
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: testing update in file with invalid input
+    void testUpdateInFileInvalid() {
+        Author oldAuthor = new Author("John", "Doe");
+        Author newAuthor = new Author("", "");
+        ObservableList<Author> authors = FXCollections.observableArrayList(oldAuthor);
+        oldAuthor.setAuthors(authors);
+        String result = newAuthor.updateInFile(oldAuthor);
+        assertEquals("1", result); // Assuming "1" is the error code in the update method
+        assertFalse(authors.contains(newAuthor));
+        assertTrue(authors.contains(oldAuthor));
+    }
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: testing update in file with valid input
+    void testUpdateInFile() {
+        Author oldAuthor = new Author("John", "Doe");
+        Author newAuthor = new Author("Jane", "Smith");
+        ObservableList<Author> authors = FXCollections.observableArrayList(oldAuthor);
+        oldAuthor.setAuthors(authors);
+        String result = newAuthor.updateInFile(oldAuthor);
+        assertEquals("Correct1", result); // Assuming "1" is the success code in the update method
+        assertFalse(authors.contains(newAuthor));
+        assertTrue(authors.contains(oldAuthor));
+    }
+    @org.junit.jupiter.api.Test
+    //Equivalence testing:testing existing method to check for author that does not exist
+    void testNotExists() {
+        Author author = new Author("Jane", "Smith");
+        ObservableList<Author> authors = FXCollections.observableArrayList(new Author("John", "Doe"));
+        assertFalse(author.exists(authors));
+    }
+    @org.junit.jupiter.api.Test
+    //Equivalence testing: search a text not matching
+    void testSearchTextNotMatching() {
+        ObservableList<Author> searchResults = (ObservableList<Author>) Author.getSearchResults("XYZ");
+        assertNotNull(searchResults);
+        assertTrue(searchResults.isEmpty());
+    }
+
+    @org.junit.jupiter.api.Test
+    //Equivalence testing
+    void testSearchTextMatching() {
+        Author author = new Author("John", "Doe");
+        ObservableList<Author> authors = FXCollections.observableArrayList(author);
+        Author.setAuthors(authors);
+
+        ObservableList<Author> searchResults = (ObservableList<Author>) Author.getSearchResults("John");
+        assertNotNull(searchResults);
+        assertFalse(searchResults.isEmpty());
+        assertEquals(author, searchResults.get(0));
+    }
+
+
+    @org.junit.jupiter.api.Test
+    //Equivalence
+    void testSearchTextEmpty() {
+        ObservableList<Author> searchResults = (ObservableList<Author>) Author.getSearchResults("");
+        assertNotNull(searchResults);
+        assertTrue(searchResults.isEmpty());
+    }
+
+
+
+    @Before
+    //Mocking
+    public void setUp() {
+        // Initialize the mocks
+        MockitoAnnotations.openMocks(this);
+
+        // Set up mockFileDataReader behavior
+        when(mockFileDataReader.readLines(anyString())).thenReturn(Arrays.asList("Author1", "Author2"));
+
+        // Set the mockFileDataReader in the Author class
+        author.setFileDataReader(mockFileDataReader);
+    }
+
+    @Test
+    //Boundary testing
+    public void testGetAuthors() {
+        // Perform the test
+        ObservableList<Author> authors = Author.getAuthors();
+
+        // Assertions and verification
+        assertNotNull(authors);
+        assertEquals(1, authors.size());
+        // Add more assertions as needed
+    }
+
+
+    @Test
+    public void testGetAuthorsWithEmptyFile() {
+        //equivalence test
+        when(mockFileDataReader.readLines(Author.FILE_PATH)).thenReturn(Arrays.asList());
+
+        // Act
+        ObservableList<Author> result = Author.getAuthors();
+
+        // Assert
+        assertEquals(0, result.size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    //Equivalence testing
+    public void testGetAuthorsWithIOException() {
+        // Arrange
+        when(mockFileDataReader.readLines(Author.FILE_PATH)).thenThrow(new RuntimeException("Simulated IOException"));
+
+        // Act
+        Author.getAuthors(); // Should throw an exception
+    }
+}
