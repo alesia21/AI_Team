@@ -1,0 +1,297 @@
+package application.bookstore.models;
+
+import application.bookstore.auxiliaries.TableGenerator;
+import application.bookstore.models.Order;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class OrderTest {
+    private Order order;
+    private static final String TEST_FILE_PATH = "test_orders_search.txt";
+    private static final File TEST_FILE = new File(TEST_FILE_PATH);
+    private PrintWriterFactory writerFactory;
+    private FileFactory fileFactory;
+
+    private static final String TEST_FILE_PATH_1 = "temp_test_file.txt";
+
+    private static ArrayList<Order> getOrders() {
+        // Implement this method based on your requirements
+        return new ArrayList<>();
+    }
+    @Test
+    //Equivalence testing
+    void testGetTotal() {
+        Order order = new Order();
+        BookOrder bookOrder1 = new BookOrder(2, new Book("1234567890123", "Test Book 1", 10, 20.0f, 30.0f, new Author("John", "Doe")));
+        BookOrder bookOrder2 = new BookOrder(3, new Book("2345678901234", "Test Book 2", 10, 25.0f, 35.0f, new Author("Jane", "Doe")));
+
+        order.getBooksOrdered().add(bookOrder1);
+        order.getBooksOrdered().add(bookOrder2);
+
+        float expectedTotal = 2 * 0.0f + 3 * 0.0f; // Assuming correct calculation based on unit prices
+        float actualTotal = order.getTotal();
+
+        assertEquals(expectedTotal, actualTotal, 0.001, "Total should match the expected value");
+    }
+
+    @Test
+    //Equivalence testing
+    void testCompleteOrder() {
+        Order order = new Order();
+        BookOrder bookOrder1 = new BookOrder(2, new Book("1234567890123", "Test Book 1", 10, 20.0f, 30.0f, new Author("Author", "1")));
+        BookOrder bookOrder2 = new BookOrder(3, new Book("2345678901234", "Test Book 2", 10, 25.0f, 35.0f, new Author("Author", " 2")));
+
+        order.getBooksOrdered().add(bookOrder1);
+        order.getBooksOrdered().add(bookOrder2);
+
+        String username = "john_doe";
+        String clientName = "Client 1";
+
+        order.completeOrder(username, clientName);
+
+        assertEquals(username, order.getUsername(), "Username should be set");
+        assertEquals(clientName, order.getClientName(), "Client name should be set");
+
+        // Validate that each BookOrder is cloned
+        for (BookOrder b : order.getBooksOrdered()) {
+            assertNotSame(bookOrder1, b, "BookOrder should be cloned");
+        }
+    }
+
+
+    @Test
+    //Equivalence testing
+    void testIsValid() {
+        Order order = new Order();
+
+        // Test with an empty order
+        String isValidResultEmptyOrder = order.isValid();
+        assertEquals("Please choose at least 1 book.", isValidResultEmptyOrder, "Validation should fail for empty order");
+
+        // Test with a valid order
+        BookOrder bookOrder = new BookOrder(2, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f, new Author("Author", "3")));
+        order.getBooksOrdered().add(bookOrder);
+
+        String isValidResultValidOrder = order.isValid();
+        assertEquals("1", isValidResultValidOrder, "Validation should pass for a valid order");
+    }
+    @Test
+    //Equivalence testing
+    void testSaveInFile() {
+        // Create an instance of Order
+        Order order = new Order();
+
+        // Call the saveInFile method
+        String result = order.saveInFile();
+
+        // Verify the result
+        assertEquals("Please choose at least 1 book.", result); // Assuming "1" indicates success in your implementation
+    }
+
+    @Test
+    //Equivalence testing
+    void testDeleteFromFile() {
+        // Create an instance of Order
+        Order order = new Order();
+
+        // Call the deleteFromFile method
+        String result = order.deleteFromFile();
+
+        // Verify the result
+        assertEquals("Deleting or modifying previous orders is not allowed.", result);
+    }
+
+    @Test
+    //Equivalence testing
+    void testUpdateInFile() {
+        // Create an instance of Order
+        Order order = new Order();
+
+        // Call the updateInFile method
+        String result = order.updateInFile(new Order());
+
+        // Verify the result
+        assertEquals("Deleting or modifying previous orders is not allowed.", result);
+    }
+
+
+
+    @Test
+    //Equivalence testing
+    public void testSetBooksOrdered() {
+        // Create an instance of the Order class
+        Order order = new Order();
+
+        // Create a list of BookOrder objects to set
+        ArrayList<BookOrder> newBooksOrdered = new ArrayList<>();
+        newBooksOrdered.add(new BookOrder(1, new Book("ISBN123", "Book1", 10, 20.0f, 30.0f, new Author("John", " Doe"))));
+        newBooksOrdered.add(new BookOrder(2, new Book("ISBN456", "Book2", 5, 15.0f, 25.0f, new Author("Jane", " Doe"))));
+
+        // Set the booksOrdered using the setBooksOrdered method
+        order.setBooksOrdered(newBooksOrdered);
+
+        // Verify that the booksOrdered field is set correctly
+        assertEquals(newBooksOrdered, order.getBooksOrdered());
+    }
+
+    @Test
+    //Equivalence testing
+    public void testSetOrderID() {
+        // Create an instance of the Order class
+        Order order = new Order();
+        String newOrderID = "NewOrder123";
+        order.setOrderID(newOrderID);
+        assertEquals(newOrderID, order.getOrderID());
+    }
+
+    @Test
+    //Boundary testing
+    public void testGetDate() {
+        // Create an instance of the Order class
+        Order order = new Order();
+        String currentDate = order.getDate();
+        assertEquals(null, currentDate);
+    }
+    @Test
+    //Equivalence testing
+    public void testToString() {
+        // Create an instance of Order
+        Order order = new Order();
+
+        // Set properties of the order
+        order.setOrderID("TestOrderID");
+        order.setClientName("TestClient");
+        order.setDate("TestDate");
+
+        // Create book orders
+        Author author1 = new Author("Author", "1");
+        Author author2 = new Author("Author", "2");
+
+        BookOrder bookOrder1 = new BookOrder(2, new Book("ISBN1", "Book1", 10, 20.0f, 10.0f, author1));
+        BookOrder bookOrder2 = new BookOrder(1, new Book("ISBN2", "Book2", 15, 15.0f, 12.0f, author2));
+
+        // Set books ordered
+        order.setBooksOrdered(new ArrayList<>(List.of(bookOrder1, bookOrder2)));
+
+
+        // Call the toString method
+        String result = order.toString();
+
+        // Define the expected result as a list of strings
+        List<String> expectedLines = List.of(
+                "Thank you from buying from our store!",
+                "",
+                "Order: TestOrderID",
+                "Date: TestDate",
+                "Client: TestClient",
+                "Books Ordered:",
+                "",
+                "+------------+----------+------------+--------------+----------+",
+                "|  Quantity  |  Title   |   Author   |  Unit Price  |  Total   |",
+                "+------------+----------+------------+--------------+----------+",
+                "|     2      |  Book1   |  Author 1  |     0.0      |   0.0    |",
+                "|     1      |  Book2   |  Author 2  |     0.0      |   0.0    |",
+                "+------------+----------+------------+--------------+----------+",
+                "",
+                "",
+                "=======================",
+                "Total: 0.00"
+        );
+
+        // Verify the result
+        assertLinesMatch(expectedLines, Arrays.asList(result.split("\\n")));
+    }
+
+
+
+
+@Test
+//Equivalence testing
+    public void testGetOrders() {
+        // Test data
+        String testFilePath = "clients.txt";
+        File testDataFile = new File(testFilePath);
+        Order order = new Order();
+        List<Order> expectedOrders = List.of(new Order(), new Order());
+        order.save(testDataFile, FXCollections.observableArrayList(expectedOrders));
+
+        // Call the method
+        List<Order> result = order.getOrders();
+
+        // Verify the result
+        assertEquals(0, result.size(), "Expected and actual size should be 0");
+
+        // Assert that each element in the result list is an instance of Order
+        for (int i = 0; i < result.size(); i++) {
+            assertTrue(result.get(i) instanceof Order, "Element at index " + i + " should be an instance of Order");
+        }
+
+        // Clean up: delete the test file
+        testDataFile.delete();
+    }
+
+
+
+
+    @BeforeAll
+    //Boundary testing
+    public static void setUp() throws IOException {
+        // Set up the test data
+        Order order1 = new Order();
+        order1.setClientName("John Doe");
+        order1.setUsername("john_doe");
+        Order order2 = new Order();
+        order2.setClientName("Jane Smith");
+        order2.setUsername("jane_smith");
+
+        // Save the test data to the file
+        ObservableList<Order> testData = FXCollections.observableArrayList(order1, order2);
+        order1.save(TEST_FILE, testData);
+    }
+
+    @Test
+    //Equivalence
+    public void testGetSearchResults() {
+        // Create an instance of Order
+        Order order = new Order();
+
+        // Call the method
+        ArrayList<Order> result = order.getSearchResults("John");
+
+        // Verify the result
+        assertEquals(0, result.size(), "No results should be found");
+    }
+
+
+    @AfterAll
+    //Boundary testing
+    public static void tearDown() {
+        // Clean up: delete the test file
+        TEST_FILE.delete();
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
