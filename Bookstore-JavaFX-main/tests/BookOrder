@@ -1,0 +1,218 @@
+package application.bookstore.models;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BookOrderTest {
+
+//WILL ADD OTHER TESTS (TESTFX, BOUNDARY OR EQUIVALENCE)
+    @Test
+    //Equivalence testing
+    public void testToString() {
+        // Create a sample Book and BookOrder
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f , author);
+        BookOrder order = new BookOrder(5, book);
+
+        // Test the toString method
+        String expectedToString = "5      pcs Test Book            Unit: 0.00   Total: 0.00";
+        assertEquals(expectedToString, order.toString(), "toString() should return the expected string");
+    }
+
+
+
+    @Test
+    //Equivalence test using Mocking
+    public void testCloneMockito() {
+        Author author1 = new Author("John", "Doe");
+        BookInterface mockBook = new MockBook("1234567890123", "Mock Book", 25, 35.0f, author1, 0.0f);
+        BookOrder originalOrder = new BookOrder(3, mockBook);
+        // Act
+        BookOrder clonedOrder = (BookOrder) originalOrder.clone();
+
+        // Assert
+        assertEquals(originalOrder.getQuantity(), clonedOrder.getQuantity());
+        assertEquals(originalOrder.getBookISBN(), clonedOrder.getBookISBN());
+        assertEquals(originalOrder.getTitle(), clonedOrder.getTitle());
+        assertEquals(originalOrder.getUnitPrice(), clonedOrder.getUnitPrice(), 0.001);
+        assertEquals(originalOrder.getTotalPrice(), clonedOrder.getTotalPrice(), 0.001);
+        assertEquals(originalOrder.getAuthor(), clonedOrder.getAuthor());
+        assertEquals(originalOrder.getPurchasedPrice(), clonedOrder.getPurchasedPrice(), 0.001);
+
+        // Ensure that changing the quantity in the original order doesn't affect the cloned order
+        originalOrder.setQuantity(5);
+        assertEquals(3, clonedOrder.getQuantity());
+    }
+    @Test
+    //Equivalence test
+    public void testClone() {
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder order = new BookOrder(5, book);
+
+        // Test the clone method
+        BookOrder clonedOrder = (BookOrder) order.clone();
+        assertNotSame(order, clonedOrder, "Cloned order should be a separate object");
+        assertEquals(order.getQuantity(), clonedOrder.getQuantity(), "Cloned order should have the same quantity");
+    }
+    @Test
+    //Equivalence test
+    public void testSetTitle() {
+        //Equivalence testing
+        // Create a sample book order
+        Author author = new Author("John", "Doe");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author));
+        String newTitle = "New Title";
+        bookOrder.setTitle(newTitle);
+        assertEquals(newTitle, bookOrder.getTitle(), "setTitle() should update the title of the book order");
+    }
+
+    @Test
+    //Equivalence test
+    public void testGetUnitPrice() {
+        Author author = new Author("John", "Doe");
+        // Create a sample book order
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author));
+        float expectedUnitPrice = 0.0f;
+        assertEquals(expectedUnitPrice, bookOrder.getUnitPrice(), "getUnitPrice() should return the expected unit price");
+    }
+
+    @Test
+    //Equivalence test
+    public void testGetQuantity() {
+        // Create a sample Book and BookOrder
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder order = new BookOrder(5, book);
+        assertEquals(5, order.getQuantity(), "getQuantity() should return the quantity");
+    }
+
+
+    @Test
+    //Equivalence test
+    public void testSetQuantity() {
+        // Create a sample Book and BookOrder
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder order = new BookOrder(5, book);
+
+        int newQuantity = 8;
+        order.setQuantity(newQuantity);
+        assertEquals(newQuantity, order.getQuantity(), "setQuantity() should update the quantity of the order");
+    }
+
+
+    @Test
+    //Equivalence test
+    public void testGetTotalPrice() {
+        // Create a sample Book and BookOrder
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 0.0f, 30.0f,author);
+        BookOrder order = new BookOrder(5, book);
+
+        // Test the getTotalPrice method
+        float expectedTotalPrice = 5 * 0.0f;
+        assertEquals(expectedTotalPrice, order.getTotalPrice(), "getTotalPrice() should return the expected total price");
+    }
+
+    @Test
+    //Equivalence test
+    public void testSetBook() {
+        // Create a sample book
+        Author author = new Author("John", "Doe");
+        Book originalBook = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        // Create a sample book order
+        BookOrder bookOrder = new BookOrder(5, originalBook);
+        Book newBook = new Book("9876543210987", "New Book", 15, 25.0f, 35.0f,author);
+        bookOrder.setBook(newBook);
+        assertEquals(newBook, bookOrder.getBook(), "setBook() should update the book of the book order");
+    }
+
+    @Test
+    //Equivalence test
+    public void testGetPurchasedPrice() {
+        // Create a sample book
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder bookOrder = new BookOrder(5, book);
+        assertEquals(book.getPurchasedPrice(), bookOrder.getPurchasedPrice(), "getPurchasedPrice() should return the expected purchased price");
+    }
+
+
+    @Test
+    //equivalence test
+    public void testSetPurchasedPrice() {
+        // Create a sample book
+        Author author = new Author("John", "Doe");
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder bookOrder = new BookOrder(5, book);
+
+        // Set a new purchased price for the book order
+        float newPurchasedPrice = 25.0f;
+        bookOrder.setPurchasedPrice(newPurchasedPrice);
+        assertEquals(newPurchasedPrice, bookOrder.getPurchasedPrice(), "setPurchasedPrice() should update the purchased price of the book order");
+    }
+
+    @Test
+    //Equivalence test
+    public void testGetBook() {
+        // Create a sample book
+        Author author = new Author("John", "Doe");
+        Book originalBook = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author);
+        BookOrder bookOrder = new BookOrder(5, originalBook);
+        Book retrievedBook = bookOrder.getBook();
+        assertEquals(originalBook, retrievedBook, "getBook() should return the expected book");
+
+    }
+
+    @Test
+    //Equivalence testing
+    public void testSetAuthor() {
+        Author sampleAuthor = new Author("Jane", "Smith");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,sampleAuthor));
+        bookOrder.setAuthor(sampleAuthor);
+        Author retrievedAuthor = bookOrder.getAuthor();
+        assertEquals(sampleAuthor, retrievedAuthor, "setAuthor() should update the author of the book order");
+    }
+    @Test
+    //Equivalence
+    public void testGetAuthor() {
+        Author sampleAuthor = new Author("John", "Doe");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,sampleAuthor));
+        bookOrder.setAuthor(sampleAuthor);
+        Author retrievedAuthor = bookOrder.getAuthor();
+        assertEquals(sampleAuthor, retrievedAuthor, "getAuthor() should return the expected author");
+    }
+
+    @Test
+    //Equivalence test
+    public void testSetUnitPrice() {
+        Author author = new Author("John", "Doe");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author));
+        float newUnitPrice = 25.0f;
+        bookOrder.setUnitPrice(newUnitPrice);
+        assertEquals(newUnitPrice, bookOrder.getUnitPrice(), "setUnitPrice() should update the unit price of the book order");
+    }
+    @Test
+    //Boundary testing
+    public void testGetBookISBN() {
+        // Create a sample book order
+         Author author = new Author("John", "Doe");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author));
+        String expectedISBN = "1234567890123";
+        assertEquals(expectedISBN, bookOrder.getBookISBN(), "getBookISBN() should return the expected book ISBN");
+    }
+
+
+    @Test
+    //Boundary testing
+    public void testSetBookISBN() { Author author = new Author("John", "Doe");
+        BookOrder bookOrder = new BookOrder(5, new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f,author));
+        String newISBN = "9876543210987";
+        bookOrder.setBookISBN(newISBN);
+        assertEquals(newISBN, bookOrder.getBookISBN(), "setBookISBN() should update the book ISBN of the book order");
+    }
+
+
+}
