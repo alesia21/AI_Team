@@ -1,0 +1,7 @@
+package application.bookstore.models;
+
+import java.io.File;
+
+public interface FileFactory {
+    File createFile(String pathname);
+}
