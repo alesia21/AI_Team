@@ -1,0 +1,46 @@
+package application.bookstore.models;
+
+public class MockBook implements BookInterface {
+    private String isbn;
+    private String title;
+    private float sellingPrice;
+    private Author author;
+    private float purchasedPrice;
+private int quantity;
+    public MockBook(String isbn, String title, int quantity, float sellingPrice, Author author, float purchasedPrice) {
+        this.isbn = isbn;
+        this.title = title;
+        this.quantity=quantity;
+        this.sellingPrice = sellingPrice;
+        this.author = author;
+        this.purchasedPrice = purchasedPrice;
+    }
+    public Book toBook() {
+        return new Book(isbn, title, quantity, purchasedPrice, sellingPrice, author);
+    }
+
+    @Override
+    public String getIsbn() {
+        return isbn;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public float getSellingPrice() {
+        return sellingPrice;
+    }
+
+    @Override
+    public Author getAuthor() {
+        return author;
+    }
+
+    @Override
+    public float getPurchasedPrice() {
+        return purchasedPrice;
+    }
+}
