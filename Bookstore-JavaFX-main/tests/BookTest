@@ -1,0 +1,249 @@
+package application.bookstore.models;
+
+import javafx.collections.ObservableList;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.File;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+class BookTest {
+    @InjectMocks
+    private Book book;
+    private static final String TEST_FILE_PATH = "test_books.txt";
+    private static final File TEST_DATA_FILE = new File(TEST_FILE_PATH);
+    @Mock
+    private FileDataReader mockFileDataReader;
+
+    @Before
+    void setUp() {
+        // Creating a sample author for testing
+        Author author = new Author("John", "Doe");
+
+        // Creating a sample book for testing
+        book = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f, author);
+
+        // Clearing the test data file before each test
+        if (TEST_DATA_FILE.exists()) {
+            TEST_DATA_FILE.delete();
+        }
+    }
+
+    @Test
+    //Equivalence testing
+    void testEquals() {
+        Book sameBook = new Book("1234567890123", "Test Book", 10, 20.0f, 30.0f, new Author("John", " Doe"));
+        Book differentBook = new Book("9876543210987", "Different Book", 5, 15.0f, 25.0f, new Author("Jane", " Smith"));
+
+        assertEquals(book.equals(sameBook), "Books should be equal");
+        assertNotEquals(book.equals(differentBook), "Books should not be equal");
+    }
+
+    @Test
+    //Equivalence testing
+    void testGetBooks() {
+        ObservableList<Book> books = Book.getBooks();
+        assertNotNull(books, "ObservableList should not be null");
+        assertTrue(books.isEmpty(), "ObservableList should be empty initially");
+    }
+
+    @Test
+    //Equivalence testing
+    void testExists() {
+        assertFalse(book.exists(), "Book should not exist initially");
+
+        // Add the book to the list
+        Book.getBooks().add(book);
+
+        assertTrue(book.exists(), "Book should exist after adding to the list");
+    }
+
+    @Test
+    //Equivalence testing
+    void testGetSearchResults() {
+        // Add the book to the list
+        Book.getBooks().add(book);
+
+        ObservableList<Book> searchResults = Book.getSearchResults("Test");
+        assertNotNull(searchResults, "Search results should not be null");
+        assertTrue(searchResults.contains(book), "Search results should contain the book");
+    }
+
+
+    @Test
+    //Equivalence testing
+    void testIsValid() {
+        assertEquals("1", book.isValid(), "Validation should pass for a valid book");
+        book.setIsbn("123");
+        assertEquals("ISBN must be exactly 13 digits long.", book.isValid(), "Validation should fail for an invalid ISBN");
+    }
+
+    @Test
+    //Equivalence testing
+    void testSaveInFile() {
+        assertEquals("1", book.saveInFile(), "Save should succeed for a new book");
+        Book.getBooks().add(book);
+
+        assertEquals("Book with this ISBN exists.", book.saveInFile(), "Save should fail for an existing book");
+    }
+
+    @Test
+    //Equivalence testing
+    void testDeleteFromFile() {
+        // Add the book to the list
+        Book.getBooks().add(book);
+
+        assertEquals("1", book.deleteFromFile(), "Delete should succeed for an existing book");
+        assertFalse(Book.getBooks().contains(book), "Book should be removed from the list after delete");
+    }
+
+
+    @Test
+    //Equivalence testing
+    void testUpdateInFile() {
+        // Add the book to the list
+        Book.getBooks().add(book);
+
+        // Create an updated version of the book
+        Book updatedBook = new Book("1234567890123", "Updated Book", 20, 25.0f, 35.0f, new Author("John", "Doe"));
+
+        assertEquals("1", updatedBook.updateInFile(book), "Update should succeed for an existing book");
+        assertTrue(Book.getBooks().contains(updatedBook), "Book should be updated in the list");
+    }
+
+    @Test
+    //Equivalence testing
+    void testToString() {
+        // Creating a sample author for testing
+        Author author = new Author("John", "Doe");
+
+        // Creating a sample book for testing
+        Book book = new Book("1234567890123", "Test Book", 10, 20.0f, 0.0f, author);
+
+        String expectedOutput = "\nBook{" +
+                "\n\t\"isbn\": 1234567890123" +
+                ",\n\t\"title\": Test Book" +
+                ",\n\t\"quantity\": 10," +
+                ",\n\t\"purchasedPrice\": 20.0" +
+                ",\n\t\"sellingPrice\":0.0" +
+                "\n}";
+
+        assertEquals(expectedOutput, book.toString(), "toString output should match expected format");
+    }
+
+    @Test
+    //Boundary testing
+    void testGetPurchasedPrice() {
+        assertEquals(20.0f, book.getPurchasedPrice(), "Purchased price should match");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetPurchasedPrice() {
+        book.setPurchasedPrice(25.0f);
+        assertEquals(25.0f, book.getPurchasedPrice(), "Purchased price should be updated");
+    }
+
+    @Test
+    //Boundary testing
+    void testGetSellingPrice() {
+        assertEquals(30.0f, book.getSellingPrice(), "Selling price should match");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetSellingPrice() {
+        book.setSellingPrice(35.0f);
+        assertEquals(35.0f, book.getSellingPrice(), "Selling price should be updated");
+    }
+
+    @Test
+    // Boundary test
+    void testGetIsbn() {
+        assertEquals("1234567890123", book.getIsbn(), "ISBN should match");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetIsbn() {
+        book.setIsbn("9876543210987");
+        assertEquals("9876543210987", book.getIsbn(), "ISBN should be updated");
+    }
+
+    @Test
+    //Boundary testing
+    void testGetTitle() {
+        assertEquals("Test Book", book.getTitle(), "Title should match");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetTitle() {
+        book.setTitle("New Title");
+        assertEquals("New Title", book.getTitle(), "Title should be updated");
+    }
+
+    @Test
+    //Boundary testing
+    void testGetAuthor() {
+        assertNotNull(book.getAuthor(), "Author should not be null");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetAuthor() {
+        Author newAuthor = new Author("Jane", " Smith");
+        book.setAuthor(newAuthor);
+        assertEquals(newAuthor, book.getAuthor(), "Author should be updated");
+    }
+
+    @Test
+    //Boundary testing
+    void testGetQuantity() {
+        assertEquals(10, book.getQuantity(), "Quantity should match");
+    }
+
+    @Test
+    //Boundary testing
+    void testSetQuantity() {
+        book.setQuantity(15);
+        assertEquals(15, book.getQuantity(), "Quantity should be updated");
+    }
+
+
+
+
+    @BeforeEach
+    public void setUpNew() {
+        MockitoAnnotations.openMocks(this);
+        Book.setFileDataReader(mockFileDataReader);
+    }
+
+    @Test
+    //Boundary testing with injected mock reader
+    public void testGetBooksWoudnithInjectedMockReader() {
+        // Arrange
+        when(mockFileDataReader.readLines(Book.FILE_PATH))
+                .thenReturn(Arrays.asList("7890123456789,Book3,15,25.0,35.0,John Doe"));
+
+        // Act
+        ObservableList<Book> result = Book.getBooks();
+
+        // Assert
+        assertEquals(5, result.size());
+        assertEquals("1234567890123", result.get(0).getIsbn());
+        assertEquals("Updated Book", result.get(0).getTitle());
+        assertEquals(20, result.get(0).getQuantity());
+        assertEquals(25.0, result.get(0).getPurchasedPrice(), 0.001);
+        assertEquals(0.0, result.get(0).getSellingPrice(), 0.001);
+        assertEquals("John Doe", result.get(0).getAuthor().getFullName());
+    }
+
+}
