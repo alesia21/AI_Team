@@ -1,0 +1,8 @@
+package application.bookstore.models;
+public interface BookInterface {
+    String getIsbn();
+    String getTitle();
+    float getSellingPrice();
+    Author getAuthor();
+    float getPurchasedPrice();
+}
