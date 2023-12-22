@@ -1,0 +1,30 @@
+package application.bookstore.models;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+class CustomFileHandler implements FileDataReader {
+    @Override
+    public List<String> readLines(String filePath) {
+        try {
+            return Files.readAllLines(Paths.get(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + filePath, e);
+        }
+    }
+
+
+    @Override
+    public void writeLines(String filePath, List<String> lines) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+    }
+
+}
