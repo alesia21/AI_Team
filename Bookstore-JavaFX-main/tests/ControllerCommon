@@ -1,0 +1,108 @@
+package application.bookstore.controllers;
+
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class ControllerCommonTest extends ApplicationTest {
+
+    private Label testLabel;
+
+    @Override
+    public void start(Stage primaryStage) {
+        testLabel = new Label();
+        Scene scene = new Scene(testLabel, 400, 200);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    @Test
+    public void testScheduleLabelReset() throws Exception {
+        Label testLabel = new Label("Test Label");
+
+        // Schedule the label reset with a short time interval
+        scheduleLabelReset(testLabel, 100);
+
+        // Sleep for a short time to allow the label reset to occur
+        Thread.sleep(200);
+
+        // Verify that the label text is empty after the scheduled time
+        assertEquals("", testLabel.getText());
+    }
+
+
+
+    private void scheduleLabelReset(Label l, int time) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    l.setText("");
+                });
+            }
+        }, time);
+    }
+
+
+    @Test
+    public void testShowSuccessMessage() {
+        // Call the method on the JavaFX application thread
+        Platform.runLater(() -> ControllerCommon.showSuccessMessage(testLabel, "Success Message"));
+
+        // Wait for the label to be updated
+        waitForLabelUpdate("Success Message");
+
+        // Assert the label content and color
+        assertEquals("Success Message", testLabel.getText());
+        assertEquals("0x006400ff", testLabel.getTextFill().toString());
+
+    }
+
+
+    @Test
+    public void testShowErrorMessage() {
+        // Call the method on the JavaFX application thread
+        Platform.runLater(() -> ControllerCommon.showErrorMessage(testLabel, "Error Message"));
+
+        // Wait for the label to be updated
+        waitForLabelUpdate("Error Message");
+
+        // Assert the label content and color
+        assertEquals("Error Message", testLabel.getText());
+        assertEquals("0xff0000ff", testLabel.getTextFill().toString()); // Red
+    }
+
+    private void waitForLabelUpdate(String expectedText) {
+        // Use a CountDownLatch to wait for the label update
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // Wait for label update on JavaFX application thread
+        Platform.runLater(() -> {
+            // Check if the label has the expected text
+            if (testLabel.getText().equals(expectedText)) {
+                latch.countDown();
+            }
+        });
+
+        try {
+            // Wait for the latch to be counted down (label update)
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    }
+
