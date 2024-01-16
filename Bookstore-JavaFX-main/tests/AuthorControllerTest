@@ -1,0 +1,56 @@
+package application.bookstore.controllers;
+
+import application.bookstore.models.Role;
+import application.bookstore.models.User;
+import application.bookstore.views.AuthorView;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxAssert;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import static org.testfx.matcher.control.TableViewMatchers.containsRow;
+import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
+
+public class AuthorControllerTest extends ApplicationTest {
+
+    @BeforeEach
+    public void setUp() {
+        // Set up the current user before each test method
+        User mockUser = new User("testUser", "Test User", Role.ADMIN);
+        AuthorView authorView = new AuthorView();
+        authorView.setCurrentUser(mockUser);
+        AuthorController authorController = new AuthorControllerBuilder().setView(authorView).createAuthorController();
+    }
+    @Override
+    public void start(Stage stage) {
+        // Create a mock user for testing with a specific role
+        User mockUser = new User("testUser", "Test User", Role.ADMIN);
+
+        // Set the mock user as the current user
+        AuthorView authorView = new AuthorView();
+        authorView.setCurrentUser(mockUser);
+
+        // Set up the AuthorController with the test AuthorView
+        AuthorController authorController = new AuthorController(authorView);
+
+        // ... rest of your test setup code ...
+    }
+
+
+    @Test
+    public void testSaveAuthor() {
+        // Assuming you have a test AuthorView with appropriate UI components
+        clickOn("#firstNameField").write("John");
+        clickOn("#lastNameField").write("Doe");
+        clickOn("#saveBtn");
+
+        // Verify that the success message is displayed
+        FxAssert.verifyThat("#messageLabel", hasText("Author created successfully!"));
+
+        // You can also verify that the table view now contains the saved author
+        FxAssert.verifyThat("#tableView", containsRow("John", "Doe"));
+    }
+
+    // Add more test methods for other functionalities (delete, edit, search, etc.)
+}
