@@ -1,0 +1,45 @@
+package application.bookstore.views;
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.control.LabeledMatchers.hasText;
+
+public class LoginViewTest extends ApplicationTest {
+
+    @Override
+    public void start(Stage primaryStage) {
+        LoginView loginView = new LoginView();
+        Scene scene = new Scene(loginView.getView(), LoginView.width, LoginView.height);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @Test
+    public void testLoginView() {
+        // Test getUsernameField() method
+        LoginView loginView=new LoginView();
+        clickOn("#" + loginView.getUsernameField().getId()).write("testUsername");
+        verifyThat("#" + loginView.getUsernameField().getId(), hasText("testUsername"));
+
+        // Test getPasswordField() method
+        clickOn("#" + loginView.getPasswordField().getId()).write("testPassword");
+        verifyThat("#" + loginView.getPasswordField().getId(), hasText("testPassword"));
+
+        // Test getLoginBtn() method
+        clickOn("#" + loginView.getLoginBtn().getId());
+        // Additional assertions for login button behavior can be added here
+
+        // Test getErrorLabel() method
+        verifyThat("#" + loginView.getErrorLabel().getId(), hasText("Test Error Message"));
+    }
+
+    @Override
+    public void stop() throws Exception {
+        FxToolkit.hideStage();
+    }
+}
