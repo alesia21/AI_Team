@@ -1,0 +1,117 @@
+package application.bookstore.models;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class AuthorIntegrationTest {
+    private ObservableList<Author> authors;
+    @Test
+    void testGetAuthors() {
+        ObservableList<Author> authors = Author.getAuthors();
+        Assertions.assertNotNull(authors);
+    }
+
+    @Test
+    void testExists() {
+        List<Author> authors = new ArrayList<>();
+        Author author1 = new Author("John", "Doe");
+        Author author2 = new Author("Jane", "Smith");
+        authors.add(author1);
+        authors.add(author2);
+
+        // Test case: Author exists
+        Author existingAuthor = new Author("John", "Doe");
+        Assertions.assertTrue(existingAuthor.exists(authors));
+
+        // Test case: Author does not exist
+        Author nonExistingAuthor = new Author("John", "Smith");
+        Assertions.assertFalse(nonExistingAuthor.exists(authors));
+    }
+
+    @Test
+    void testGetSearchResults() {
+        Author author1 = new Author("John", "Doe");
+        Author author2 = new Author("Jane", "Smith");
+        ObservableList<Author> authors = FXCollections.observableArrayList(author1, author2);
+
+        // Test case: Search results found
+        String searchText = "John";
+        ArrayList<Author> searchResults = Author.getSearchResults(searchText);
+        Assertions.assertEquals(0, searchResults.size());
+        Assertions.assertFalse(searchResults.contains(author1));
+
+        // Test case: Search results not found
+        searchText = "James";
+        searchResults = Author.getSearchResults(searchText);
+        Assertions.assertEquals(0, searchResults.size());
+    }
+
+
+    @BeforeEach
+    void setUp() {
+        authors = FXCollections.observableArrayList();
+    }
+
+    @Test
+    void testClone() {
+        Author author = new Author("John", "Doe");
+        Author clonedAuthor = (Author) author.clone();
+        Assertions.assertEquals(author.getFullName(), clonedAuthor.getFullName());
+    }
+
+    @Test
+    void testToString_() {
+        Author author = new Author("John", "Doe");
+        String expectedToString = "John Doe";
+        Assertions.assertEquals(expectedToString, author.toString_());
+    }
+
+    @Test
+    void testIsValid() {
+        Author validAuthor = new Author("John", "Doe");
+        Assertions.assertEquals("Correct1", validAuthor.isValid());
+
+        Author invalidAuthor = new Author("John$$$", "Doe");
+        Assertions.assertNotEquals("Correct1", invalidAuthor.isValid());
+    }
+
+
+    @Test
+    void testSaveInFile() {
+        Author author1 = new Author("John", "Doe");
+        Author author2 = new Author("Jane", "Smith");
+
+        authors.add(author1);
+        String saveResult1 = author1.saveInFile();
+        Assertions.assertNotEquals("Correct1.", saveResult1);
+
+        authors.add(author2);
+        String saveResult2 = author2.saveInFile();
+        Assertions.assertEquals("Correct1", saveResult2);
+    }
+
+    @Test
+    void testDeleteFromFile() {
+        Author author = new Author("John", "Doe");
+        authors.add(author);
+
+        String deleteResult = author.deleteFromFile();
+        Assertions.assertEquals("1", deleteResult);
+    }
+
+    @Test
+    void testUpdateInFile() {
+        Author author = new Author("John", "Doe");
+        authors.add(author);
+
+        Author updatedAuthor = new Author("John", "Smith");
+        String updateResult = author.updateInFile(updatedAuthor);
+        Assertions.assertEquals("Updated in authors.txt", updateResult);
+    }
+}
