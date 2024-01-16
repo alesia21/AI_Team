@@ -1,0 +1,44 @@
+package application.bookstore.ui;
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+public class LogoutButtonTest extends ApplicationTest {
+
+    private LogoutButton logoutButton;
+
+    @Override
+    public void start(Stage stage) {
+        logoutButton = new LogoutButton();
+        Scene scene = new Scene(logoutButton, 200, 100);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Test
+    public void testLogoutButton() {
+
+        // Verify that the button has an image
+        verifyThat(".button .image-view", isVisible());
+
+
+        // Interact with the button (click it)
+        clickOn(".button");
+
+        // Add additional verifications based on the expected behavior of the LogoutButton
+    }
+
+    @Override
+    public void stop() throws TimeoutException {
+        // This is called after the test is done. You can use it to clean up resources.
+        FxToolkit.hideStage();
+    }
+}
