@@ -1,0 +1,57 @@
+package application.bookstore.ui;
+
+
+import application.bookstore.models.Order;
+import application.bookstore.views.View;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+public class PrintWindowTest extends ApplicationTest {
+
+    private Stage mainStage;
+    private View mainView;
+    private PrintWindow printWindow;
+
+    @Override
+    public void start(Stage stage) {
+        mainStage = stage;
+        mainView = new View() {
+            @Override
+            public Parent getView() {
+                return null;
+            }
+        }; // You may need to create a mock or use a real View instance
+
+        Order sampleOrder = new Order(); // You may need to create a mock or use a real Order instance
+        printWindow = new PrintWindow(mainStage, mainView, sampleOrder);
+    }
+
+    @Test
+    public void testPrintWindow() {
+        // Verify that the window is showing
+        verifyThat(".label", isVisible()); // Assuming the dataLabel is a Label
+
+        // Verify that the Ok button is visible
+        verifyThat(".button", isVisible());
+
+        // Interact with the Ok button (click it)
+        clickOn(".button");
+
+    }
+
+    @Override
+    public void stop() throws TimeoutException {
+        // This is called after the test is done. You can use it to clean up resources.
+        FxToolkit.hideStage();
+    }
+
+
+}
