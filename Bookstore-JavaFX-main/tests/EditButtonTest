@@ -1,0 +1,48 @@
+package application.bookstore.ui;
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+public class EditButtonTest extends ApplicationTest {
+
+    private EditButton editButton;
+
+    @Override
+    public void start(Stage stage) {
+        editButton = new EditButton();
+        Scene scene = new Scene(editButton, 200, 100);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Test
+    public void testEditButton() {
+        // Verify that the button has the correct text
+
+
+        // Verify that the button has an image
+        verifyThat(".button .image-view", isVisible());
+
+
+
+
+        // Interact with the button (click it)
+        clickOn(".button");
+
+        // Add additional verifications based on the expected behavior of the EditButton
+    }
+
+    @Override
+    public void stop() throws TimeoutException {
+        // This is called after the test is done. You can use it to clean up resources.
+        FxToolkit.hideStage();
+    }
+}
