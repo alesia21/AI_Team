@@ -1,0 +1,45 @@
+package application.bookstore.ui;
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+
+public class ClearButtonTest extends ApplicationTest {
+
+    private ClearButton clearButton;
+
+    @Override
+    public void start(Stage stage) {
+        clearButton = new ClearButton();
+        Scene scene = new Scene(clearButton, 200, 100);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Test
+    public void testClearButton() {
+
+        // Verify that the button has an image
+        verifyThat(".button .image-view", isVisible());
+
+        // Interact with the button (click it)
+        clickOn(".button");
+
+        // Verify the button's state or any changes after interaction
+        // For example, you might check if a label or other UI element was updated
+        // verifyThat(".label", hasText("Button Clicked"));
+    }
+
+    @Override
+    public void stop() throws TimeoutException {
+        // This is called after the test is done. You can use it to clean up resources.
+        FxToolkit.hideStage();
+    }
+}
