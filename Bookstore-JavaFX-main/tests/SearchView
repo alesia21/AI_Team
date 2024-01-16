@@ -1,0 +1,78 @@
+package application.bookstore.views;
+
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.api.FxAssert;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.matcher.control.TextInputControlMatchers;
+
+public class SearchViewTest extends ApplicationTest {
+
+    private SearchView searchView;
+
+
+
+// ...
+
+    @Test
+    public void testSearchView_one() {
+        // Test getSearchField() method
+        TextField searchField = searchView.getSearchField();
+        FxAssert.verifyThat(searchField, TextInputControlMatchers.hasText(""));
+        FxAssert.verifyThat(searchField, TextInputControlMatchers.hasText(""));
+
+        // Type something into the search field
+        clickOn(searchField).write("");
+        FxAssert.verifyThat(searchField, TextInputControlMatchers.hasText(""));
+
+        // ... rest of the test ...
+
+        // After clearing, assert that the search field is empty
+        clickOn(searchView.getClearBtn());
+        FxAssert.verifyThat(searchField, TextInputControlMatchers.hasText(""));
+        FxAssert.verifyThat(searchField, TextInputControlMatchers.hasText(""));
+    }
+
+
+
+
+
+
+
+    @Override
+    public void start(Stage stage) {
+        searchView = new SearchView("Search: ");
+        Scene scene = new Scene(searchView.getSearchPane(), 300, 100);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @Test
+    public void testSearchView() {
+        // Test initial state
+        FxAssert.verifyThat("#searchField", TextInputControlMatchers.hasText(""));
+
+        // Type something into the search field
+        clickOn("#searchField").write("Test Input");
+        FxAssert.verifyThat("#searchField", TextInputControlMatchers.hasText("Test Input"));
+
+        // Click on the Search button
+        clickOn("#searchBtn");
+
+        // Add your assertions for the expected behavior when the Search button is clicked
+
+        // Click on the Clear button
+        clickOn("#clearBtn");
+
+        // Verify that the search field is cleared
+        FxAssert.verifyThat("#searchField", TextInputControlMatchers.hasText(""));
+    }
+
+    @Override
+    public void stop() throws Exception {
+        FxToolkit.hideStage();
+    }
+}
