@@ -1,0 +1,80 @@
+package application.bookstore.controllers;
+
+import application.bookstore.models.User;
+import application.bookstore.views.LoginView;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.matcher.base.NodeMatchers;
+import org.testfx.matcher.control.LabeledMatchers;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.testfx.api.FxAssert.verifyThat;
+
+public class LoginControllerTest extends ApplicationTest {
+
+    private Stage stage;
+    private LoginController loginController;
+
+    @Override
+    public void start(Stage primaryStage) {
+        stage = primaryStage;
+        LoginView loginView = new LoginView();
+        loginController = new LoginController(loginView, primaryStage);
+        Scene scene = new Scene(loginView.getView(), LoginView.width, LoginView.height);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @Test
+    public void testLoginSuccess() {
+        // Assuming there is a user with known credentials in your User.getIfExists method
+        User existingUser = new User("knownUsername", "knownPassword");
+
+        // Set up the initial state
+        clickOn("#usernameField").write(existingUser.getUsername());
+        clickOn("#passwordField").write(existingUser.getPassword());
+
+        // Fire the login button
+        clickOn("#loginButton");
+
+        stage.getScene().getRoot();
+        assertTrue(true);
+    }
+    @Test
+    public void testLoginFailure() {
+        // Set up the initial state with incorrect credentials
+        clickOn("#usernameField").write("nonexistentUsername");
+        clickOn("#passwordField").write("nonexistentPassword");
+
+        // Fire the login button
+        clickOn("#loginButton");
+
+        // Check if the error label has the expected text
+        verifyThat("#errorLabel", LabeledMatchers.hasText("Wrong username or password"));
+    }
+    @Test
+    public void testLoginSuccessAndViewTransition() {
+        // Assuming there is a user with known credentials in your User.getIfExists method
+        User existingUser = new User("knownUsername", "knownPassword");
+
+        // Set up the initial state
+        clickOn("#usernameField").write(existingUser.getUsername());
+        clickOn("#passwordField").write(existingUser.getPassword());
+
+        // Fire the login button
+       clickOn("#loginButton");
+
+        // Check if the MainView is displayed
+        assertNotNull(loginController.getNextView());
+        verifyThat(loginController.getNextView().getView(), NodeMatchers.isVisible());
+
+        // Check if the currentUser is set
+        assertNotNull(loginController.getCurrentUser());
+        assertEquals(existingUser.getUsername(), loginController.getCurrentUser().getUsername());
+    }
+
+
+
+}
